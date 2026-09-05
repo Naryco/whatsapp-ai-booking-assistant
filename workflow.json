@@ -1,0 +1,1666 @@
+{
+  "name": "WP bot V3",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "6a558ba5-5c33-4a5a-89ac-5d2037d901bc",
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "position": [
+        1264,
+        -48
+      ],
+      "webhookId": "738b9902-7ae4-46df-bc73-6684d7d67bdf",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "YOUR_WHATSAPP_CREDENTIAL_ID",
+          "name": "YOUR_WHATSAPP_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "contextWindowLength": 6
+      },
+      "id": "ccefda1a-f409-4857-8fc8-66b3ebdf271e",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        1584,
+        416
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "options": {
+          "timezone": "Asia/Kolkata"
+        }
+      },
+      "id": "1535b7b3-5f96-4698-81b5-fad6c0bc3e14",
+      "name": "Date & Time",
+      "type": "n8n-nodes-base.dateTimeTool",
+      "position": [
+        1648,
+        512
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "YOUR_WHATSAPP_PHONE_NUMBER_ID",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "5343ade1-6d03-4518-b415-f3e1ce06bcbc",
+      "name": "Send message",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        5568,
+        480
+      ],
+      "webhookId": "779c6e67-50cc-4757-9a96-14ab5cc1521f",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "options": {}
+      },
+      "id": "7ed8ce9e-dae8-420a-b80c-2a8c7c837e73",
+      "name": "Get User Appointments",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        2112,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "appointment_date": "={{ $('Edit Fields1').item.json[\"appointment-date\"] }}",
+            "appointment_time": "={{ $('Edit Fields1').item.json[\"appointment-time\"] }}",
+            "id": "={{ $('Edit Fields1').item.json[\"phone-number\"] }}",
+            "service": "={{ $('Edit Fields1').item.json[\"service-type\"] }}",
+            "costumer_name": "={{ $('Edit Fields1').item.json[\"full-name\"] }}",
+            "phone_number": "={{ $('Edit Fields1').item.json[\"phone-number\"] }}",
+            "Start-Date-time": "={{ $('Edit Fields1').item.json[\"start-datetime-ISO\"] }}",
+            "end-Date-time": "={{ $('Edit Fields1').item.json[\"end-datetime-ISO\"] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ]
+        },
+        "options": {}
+      },
+      "id": "9fc2a4d5-45b7-4a4d-8e0d-1fad705c6aff",
+      "name": "Add Appointment",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        1760,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "options": {}
+      },
+      "id": "26b7e654-fd45-48b7-81ff-40ef115a84f4",
+      "name": "Get All Appointments",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        2240,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Code in JavaScript1').first().json.raw_message }}",
+        "options": {
+          "systemMessage": "=Sen bir kuaför randevu asistanısın.\n\nGörevin kullanıcının mesajını analiz edip SADECE geçerli JSON döndürmektir.\nJSON dışında açıklama, markdown, metin, yorum yazma.\n\nDesteklenen işlemler:\n1. availability_query: Boş saat sorgulama\n2. create_appointment: Randevu oluşturma\n3. reschedule_appointment: Randevu değiştirme\n4. cancel_appointment: Randevu iptal etme\n5. lookup_appointment: Randevu sorgulama\n6. missing_info: Eksik bilgi isteme\n\nKurallar:\n- Kullanıcı sadece “yarın boş saatler ne”, “bugün müsaitlik var mı”, “cumaya boş saat var mı” diyorsa operation_type = availability_query.\n- Kullanıcı net tarih ve saat verip randevu almak istiyorsa operation_type = create_appointment.\n- Kullanıcı randevuyu değiştirmek, ertelemek, kaydırmak istiyorsa operation_type = reschedule_appointment.\n- Kullanıcı iptal etmek istiyorsa operation_type = cancel_appointment.\n- Bilgi eksikse operation_type = missing_info.\n- Tarihleri Türkçe doğal ifadeyle bırakabilirsin: bugün, yarın, cuma, 2 gün sonra.\n- Saat varsa appointment_time alanına HH:mm formatında yaz.\n- Saat yoksa appointment_time = null.\n- İsim yoksa full_name = null.\n- Hizmet tipi yoksa service_type = \"Belirtilmedi / Diğer\".\n- Telefon numarası yoksa phone_number = null.\nKullanıcı net tarih ve saat veriyorsa ve randevu almak istiyorsa operation_type kesinlikle create_appointment olmalı.\nÖrnek: \"yarın 14:00 saç kesimi istiyorum\" → create_appointment.\nÖrnek: \"cumaya 10'da randevu alabilir miyim\" → create_appointment.\n\nServis süreleri:\n- Saç Kesimi: 60 dakika\n- Boya/Röfle: 150 dakika\n- Manikür/Pedikür: 90 dakika\n- Fön/Şekillendirme: 30 dakika\n- Belirtilmedi / Diğer: 60 dakika\n\nDöndürmen gereken JSON formatı:\n\n{\n  \"operation_type\": \"availability_query\",\n  \"full_name\": null,\n  \"phone_number\": null,\n  \"service_type\": \"Belirtilmedi / Diğer\",\n  \"appointment_date\": \"yarın\",\n  \"appointment_time\": null,\n  \"new_appointment_date\": null,\n  \"new_appointment_time\": null,\n  \"new_service_type\": null,\n  \"customer_message\": \"Kısa, nazik müşteri cevabı\"\n}"
+        }
+      },
+      "id": "d492343e-5749-4b93-86c0-36c35a38dcff",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1504,
+        48
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "costumer_name": "={{ $('Edit Fields1').item.json[\"full-name\"] }}",
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "appointment_date": "={{ $('Edit Fields1').item.json[\"reschudle-appointment-date\"] }}",
+            "appointment_time": "={{ $('Edit Fields1').item.json[\"reschudle-time-net\"] }}",
+            "service": "={{ $('Edit Fields1').item.json[\"reschudle-service-type\"] }}",
+            "Start-Date-time": "={{ $('Edit Fields1').item.json[\"reschudle-start-ISO\"] }}",
+            "end-Date-time": "={{ $('Edit Fields1').item.json[\"reschudle-end-ISO\"] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ]
+        },
+        "options": {}
+      },
+      "id": "28393130-4f1d-4be3-a58f-9fcbeebd44f3",
+      "name": "Reschedule Appointment",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        1888,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "options": {}
+      },
+      "id": "c79a3c1f-3803-42df-8357-3f6ec7e68282",
+      "name": "Config",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        2384,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 Try It Out: AI-Powered WhatsApp Booking Assistant\n\nManage your **appointments** with ease — book, reschedule, cancel, and even **collect payments online** — all through WhatsApp!\n\n### ✅ What This Does:\nLaunch a smart AI assistant that handles:\n- 🗓 **Appointment bookings**  \n- 🔁 **Rescheduling**  \n- ❌ **Cancellations**  \n- 💳 **Online payments via Stripe**\n\nAll actions are handled directly through **WhatsApp** for a smooth and intuitive user experience.\n\n---\n\n### 🛠 How to Get Started\n\n1. **Connect Your Credentials:**\n   - WhatsApp API  \n   - Google Gemini API  \n   - Google Sheet  \n   - Stripe Secret Key  \n\n2. **Activate the Workflow**\n\n3. **Message your WhatsApp bot** with any of the following to get started:\n   - `\"Hi\"`  \n   - `\"Create New Booking\"`  \n\n---\n\n### 💬 Need Help?\n\nLearn how to create this appointment booking workflow from scratch.\nFollow this video : [YouTube](https://youtube.com)\n\n**Happy building!**  \n— [GreatStack](https://greatstack.dev)\n",
+        "height": 1016,
+        "width": 444,
+        "color": 5
+      },
+      "id": "7000444a-e2db-4c4f-9b6a-7e76e4f0ab08",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Appointment Booking AI Assistant:\n1. Create Booking\n2. View Upcoming Appointment \n3. Rescheduling\n4. Cancellation\n\nEdit the **System Message** to adjust your agent’s thinking, behavior, and replies.\n\n\n\n\n\n\n\n\n\n\n",
+        "height": 1292,
+        "width": 3788,
+        "color": 4
+      },
+      "id": "f5c9d46a-8e17-4304-9e44-3d9a15a557fc",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        544,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1504,
+        256
+      ],
+      "id": "324cc557-d18a-4a0e-a413-bc95f6789631",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Final Parse Kodu: N8N JS ortamına %100 uyumlu (harici kütüphanesiz) ve NULL değeri döndürmeyen versiyon.\n * * @returns {array} - Düzleştirilmiş ve NULL değeri içermeyen veriyi içeren çıktı dizisi.\n */\n\nconst items = [];\nfor (const item of $input.all()) {\n    \n    // Girdi verisine güvenli erişim\n    const rawMessage = item.json.raw_message || ($('WhatsApp Trigger').length > 0 && $('WhatsApp Trigger').first().json.messages[0].text.body) || ''; \n    const lowerCaseMessage = rawMessage.toLowerCase().trim();\n    \n    // --- TEMEL DEĞİŞKEN TANIMLARI ---\n    let targetDate = new Date();\n    const now = new Date();\n    \n    let parsedDateTime = null; // ISO 8601 (LLM/DB)\n    let appointmentDate = null; // GG-AA-YYYY (Sheet)\n    let appointmentTime = null; // SS:DD (Sheet)\n    let serviceType = 'Belirtilmedi / Diğer'; \n    let fullName = null; // Çekilen İsim Değeri\n    \n    let hour = null;\n    let minute = '00';\n    let isPM = false;\n\n    // --- YARDIMCI İSİM FİLTRESİ ---\n    // Türkçe karakterleri desteklemek için özel bir filtre oluşturulur (Unicode RegEx kullanmadan).\n    const turkishChars = \"a-zıİçÇşŞüÜöÖğĞ\";\n    \n    // --- 1. TAM İSİM TESPİTİ (SADELEŞTİRİLMİŞ) ---\n\n    function extractFullName(message) {\n        // İsim tespiti için mesajı normalize et (Kelime başları büyük harfe çevrilir)\n        const capitalizedMessage = message.split(' ').map(word => {\n            if (word.length > 0) {\n                // Kelimeyi büyük harfle başlat\n                return word.charAt(0).toUpperCase() + word.slice(1);\n            }\n            return word;\n        }).join(' ');\n\n        // 1. Anahtar Kelime Sonrası Yakalama (Örn: \"adım Ayşe Yılmaz\")\n        // (\\w\\s) yerine, Türkçeye uygun harf setini içeren ve basit olanı kullanırız.\n        const nameKeywordsRegex = new RegExp(`(?:benim adım|adım|ismim|ben)\\\\s+([${turkishChars}\\\\s]{2,40})`, 'i'); \n        let nameMatch = capitalizedMessage.match(nameKeywordsRegex);\n\n        if (nameMatch && nameMatch[1]) {\n            return nameMatch[1].trim().split(/\\s+/).slice(0, 3).join(' ');\n        }\n        \n        // 2. Randevuya Bağlı İsim Yakalama (Örn: \"Ahmet Arif UYBADIN adına randevu\")\n        const specificNameRegex = new RegExp(`adına\\\\s+([${turkishChars}\\\\s]{2,40}) randevu`, 'i'); \n        nameMatch = capitalizedMessage.match(specificNameRegex);\n        \n        if (nameMatch && nameMatch[1]) {\n             const capturedName = nameMatch[1].trim();\n             if (capturedName.split(/\\s+/).length >= 2) { \n                return capturedName;\n             }\n        }\n        \n        // 3. Cümle Başı İsim Yakalama (Randevu kelimesinden önce gelen 1-3 kelime)\n        const sentenceStartRegex = new RegExp(`^([${turkishChars}\\\\s]{2,30}) randevu`, 'i');\n        nameMatch = capitalizedMessage.match(sentenceStartRegex);\n        \n        if (nameMatch && nameMatch[1]) {\n            return nameMatch[1].trim();\n        }\n\n        return null;\n    }\n\n    fullName = extractFullName(rawMessage);\n\n    // --- 2. HİZMET TÜRÜ TESPİTİ ---\n    const serviceKeywords = {\n        \"saç kesimi\": [\"kesim\", \"saç\"],\n        \"boya/röfle\": [\"boya\", \"röfle\", \"ombre\"],\n        \"manikür/pedikür\": [\"manikür\", \"pedikür\", \"tırnak\"],\n        \"fön/şekillendirme\": [\"fön\", \"şekillendirme\", \"topuz\"]\n    };\n\n    for (const type in serviceKeywords) {\n        for (const keyword of serviceKeywords[type]) {\n            if (lowerCaseMessage.includes(keyword)) {\n                serviceType = type;\n                break; \n            }\n        }\n        if (serviceType !== 'Belirtilmedi / Diğer') {\n            break;\n        }\n    }\n\n    // --- 3. GÜN TESPİTİ ---\n    let dayFound = false;\n\n    if (lowerCaseMessage.includes(\"yarın\") || lowerCaseMessage.includes(\"yarin\")) {\n        targetDate.setDate(targetDate.getDate() + 1);\n        dayFound = true;\n    } \n\n    const dayNames = { \"pazartesi\": 1, \"salı\": 2, \"çarşamba\": 3, \"perşembe\": 4, \"cuma\": 5, \"cumartesi\": 6, \"pazar\": 0 };\n    const todayDay = now.getDay();\n\n    if (!dayFound) {\n        for (const name in dayNames) {\n            if (lowerCaseMessage.includes(name)) {\n                let targetDay = dayNames[name];\n                let diff = targetDay - todayDay;\n                \n                // Bugün Cumartesi (6) ise ve Salı (2) isteniyorsa: 2 - 6 = -4. Yeni hafta: -4 + 7 = 3 gün sonra.\n                if (diff <= 0) { diff += 7; } \n                if (lowerCaseMessage.includes(\"gelecek hafta\")) { diff += 7; }\n                \n                targetDate.setDate(now.getDate() + diff); \n                dayFound = true;\n                break;\n            }\n        }\n    }\n    \n    // --- 4. SAAT TESPİTİ VE DÖNÜŞÜMÜ ---\n\n    const timeRegex = /(?:\\bsaat\\s*)?(\\d{1,2})(?:[:\\s\\.](\\d{2}))?/g;\n    let matches = timeRegex.exec(lowerCaseMessage);\n    \n    if (matches) {\n        hour = parseInt(matches[1]);\n        minute = matches[2] || '00';\n        \n        if (hour < 12) { \n            if (lowerCaseMessage.includes(\"akşam\") || lowerCaseMessage.includes(\"ogle\") || lowerCaseMessage.includes(\"öğle\") || lowerCaseMessage.includes(\"öğleden sonra\")) {\n                isPM = true;\n            }\n        }\n    }\n\n    if (hour !== null) {\n        if (isPM && hour < 12) { hour += 12; } \n        else if (!isPM && hour === 12) { hour = 0; }\n    }\n\n    // --- 5. BİRLEŞTİRME VE ÇIKTI FORMATLAMA (NULL GARANTİSİ) ---\n\n    // A. SAAT VE GÜN VARSA (TAM BİLGİ VAR)\n    if (hour !== null && (dayFound || lowerCaseMessage.includes(\"bugün\"))) {\n        \n        let finalDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());\n        \n        finalDate.setHours(hour);\n        finalDate.setMinutes(parseInt(minute));\n\n        parsedDateTime = finalDate.toISOString();\n        \n        const day = finalDate.getDate().toString().padStart(2, '0');\n        const month = (finalDate.getMonth() + 1).toString().padStart(2, '0');\n        const year = finalDate.getFullYear();\n        appointmentDate = `${day}-${month}-${year}`;\n\n        const hoursFormatted = finalDate.getHours().toString().padStart(2, '0');\n        const minutesFormatted = finalDate.getMinutes().toString().padStart(2, '0');\n        appointmentTime = `${hoursFormatted}:${minutesFormatted}`;\n        \n    } \n    // B. SADECE GÜN VARSA (Saat eksik) - Randevu İptali/Listeleme için Tarihi yine de döndür.\n    else if (dayFound) {\n        // Tarih formatını hesapla (Saati sıfırlar)\n        const day = targetDate.getDate().toString().padStart(2, '0');\n        const month = (targetDate.getMonth() + 1).toString().padStart(2, '0');\n        const year = targetDate.getFullYear();\n        appointmentDate = `${day}-${month}-${year}`;\n        \n        // parsedDateTime ve appointmentTime null kalır.\n    }\n    \n    // --- 6. NİHAİ ÇIKTIYI OLUŞTURMA (NULL'U STRING'E ÇEVİRME GARANTİSİ) ---\n    items.push({\n        json: {\n            // Önceki girdiler korunur\n            ...item.json,\n            raw_message: rawMessage,\n            \n            // NULL'ları string'e çevirir\n            parsed_date: parsedDateTime === null ? \"null\" : parsedDateTime,\n            appointment_date: appointmentDate === null ? \"null\" : appointmentDate,\n            appointment_time: appointmentTime === null ? \"Saat Eksik\" : appointmentTime,\n            \n            // Diğerleri\n            service_type: serviceType,\n            full_name: fullName === null ? \"null\" : fullName \n        },\n    });\n}\n\n// Sonuç olarak, nesnelerden oluşan bir dizi (array) döndürülür\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        176
+      ],
+      "id": "b82ff224-b470-46cf-acf3-96a19110f807",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Input Normalizer\n * WhatsApp veya Webhook'tan gelen mesajı tek formata çevirir.\n * Çıktı:\n * raw_message\n * phone_number\n * user_name\n * contains_time_info\n * is_reschedule_intent\n * is_cancel_intent\n * is_availability_query\n */\n\nconst items = [];\nconst input = $input.first()?.json || {};\n\nlet rawMessage = '';\nlet phoneNumber = '';\nlet userName = '';\nlet errorStatus = false;\n\ntry {\n  // 1) WhatsApp Cloud API formatı\n  rawMessage =\n    input.messages?.[0]?.text?.body ||\n    input.body?.messages?.[0]?.text?.body ||\n\n    // 2) Webhook test formatı\n    input.message ||\n    input.body?.message ||\n    input.text ||\n    input.body?.text ||\n    '';\n\n  phoneNumber =\n    input.contacts?.[0]?.wa_id ||\n    input.body?.contacts?.[0]?.wa_id ||\n    input.phone ||\n    input.body?.phone ||\n    '';\n\n  userName =\n    input.contacts?.[0]?.profile?.name ||\n    input.body?.contacts?.[0]?.profile?.name ||\n    input.name ||\n    input.body?.name ||\n    '';\n\n  if (!rawMessage || typeof rawMessage !== 'string') {\n    throw new Error('Mesaj içeriği bulunamadı.');\n  }\n\n  const lower = rawMessage.toLowerCase().trim();\n\n  const timeKeywords = [\n    'yarın', 'yarin', 'bugün', 'bugun',\n    'pazartesi', 'salı', 'sali', 'çarşamba', 'carsamba',\n    'perşembe', 'persembe', 'cuma', 'cumartesi', 'pazar',\n    'hafta', 'saat', 'randevu', 'gün', 'gun',\n    'ne zaman', 'saç', 'sac', 'kesim'\n  ];\n\n  const rescheduleKeywords = [\n    'düzenle', 'duzenle', 'değiştir', 'degistir',\n    'kaydır', 'kaydir', 'ertele', 'yeni zaman',\n    'başka bir gün', 'baska bir gun'\n  ];\n\n  const cancelKeywords = [\n    'iptal', 'vazgeç', 'vazgectim', 'gelemeyeceğim',\n    'gelemeyecegim', 'sil'\n  ];\n\n  const availabilityKeywords = [\n    'boş saat', 'bos saat', 'müsait', 'musait',\n    'uygun saat', 'hangi saat', 'saatler',\n    'boşluk', 'bosluk'\n  ];\n\n  const numericTimeRegex = /\\b\\d{1,2}([:.]\\d{2})?\\b/;\n\n  const containsTimeInfo =\n    numericTimeRegex.test(lower) ||\n    timeKeywords.some(k => lower.includes(k));\n\n  const isRescheduleIntent =\n    rescheduleKeywords.some(k => lower.includes(k));\n\n  const isCancelIntent =\n    cancelKeywords.some(k => lower.includes(k));\n\n  const isAvailabilityQuery =\n    availabilityKeywords.some(k => lower.includes(k)) ||\n    (\n      containsTimeInfo &&\n      !isCancelIntent &&\n      !isRescheduleIntent &&\n      !numericTimeRegex.test(lower)\n    );\n\n  items.push({\n    json: {\n      ...input,\n      raw_message: rawMessage,\n      phone_number: phoneNumber,\n      user_name: userName,\n      contains_time_info: containsTimeInfo,\n      is_reschedule_intent: isRescheduleIntent,\n      is_cancel_intent: isCancelIntent,\n      is_availability_query: isAvailabilityQuery,\n      error_status: false\n    }\n  });\n\n} catch (error) {\n  items.push({\n    json: {\n      ...input,\n      raw_message: rawMessage || '',\n      phone_number: phoneNumber || '',\n      user_name: userName || '',\n      contains_time_info: false,\n      is_reschedule_intent: false,\n      is_cancel_intent: false,\n      is_availability_query: false,\n      error_status: true,\n      error_message: error.message\n    }\n  });\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        176
+      ],
+      "id": "e3e125e1-2f5e-46c5-9214-b5e2343bf3b9",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": 0,
+            "id": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "costumer_name": "={{ $('Edit Fields1').item.json[\"full-name\"] }}",
+            "appointment_date": "={{ $('Edit Fields1').item.json[\"appointment-date\"] }}",
+            "appointment_time": "={{ $('Edit Fields1').item.json[\"appointment-time\"] }}",
+            "service": "={{ $('Edit Fields1').item.json[\"service-type\"] }}",
+            "Start-Date-time": "={{ $('Edit Fields1').item.json[\"start-datetime-ISO\"] }}",
+            "end-Date-time": "={{ $('Edit Fields1').item.json[\"end-datetime-ISO\"] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ]
+        },
+        "options": {}
+      },
+      "id": "728e5e15-c1a7-4b27-b9ba-0f3031dc96d5",
+      "name": "Cancel Appointment",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "position": [
+        2000,
+        384
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * NİHAİ UYUMLULUK VE ÇÖZÜMLEME KODU (Yıl İyileştirmeli Sürüm)\n * Bu kod, geçmiş yıldan gelen mutlak tarihleri otomatik olarak güncel yıla çeker (Future Date Correction) \n * ve tüm Türkçe/göreceli zamanları hesaplar.\n *\n * @returns {array} - Tüm ISO, net tarih ve hesaplanmış zamanları içeren çıktı dizisi.\n */\n\nconst items = $input.all();\nconst outputItems = []; \nconst now = new Date();\n\n// --- SABİT İŞ MANTIĞI: SÜRELER VE YARDIMCI FONKSİYONLAR ---\nconst SERVICE_DURATIONS = {\n    \"Kişisel bakım\": 150, \"Saç Kesimi\": 60, \"Boya/Röfle\": 150, \"Manikür/Pedikür\": 90, \n    \"Fön/Şekillendirme\": 30, \"Genel bakım\": 150, \"saç kesim\": 60, \"Belirtilmedi / Diğer\": 60 \n};\n\n// YARDIMCI FONKSİYON 1: Türkçe Gün Adı/İfadesinden Net Tarihi Bulan Fonksiyon\nfunction resolveRelativeDate(dateString, timeString) {\n    const lowerDate = String(dateString || '').toLowerCase().trim();\n    const lowerTime = String(timeString || '').toLowerCase().trim();\n\n    if (!lowerDate || lowerDate === 'null') return null;\n\n    let targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); \n    let dateResolved = false;\n\n    // YENİ KRİTİK ADIM: Mutlak Tarih Formatını Kontrol Etme\n    const absoluteDateRegex = /(\\d{4}[-/]\\d{1,2}[-/]\\d{1,2})|(\\d{1,2}[-/]\\d{1,2}[-/]\\d{4})/;\n    const absoluteMatch = lowerDate.match(absoluteDateRegex);\n\n    if (absoluteMatch) {\n        try {\n            let parsedDate = new Date(absoluteMatch[0]); \n            if (!isNaN(parsedDate.getTime())) {\n                \n                // --- KRİTİK DÜZELTME: GEÇMİŞ YIL KONTROLÜ (2024 -> 2025) ---\n                const currentYear = now.getFullYear();\n                if (parsedDate.getFullYear() < currentYear) {\n                    parsedDate.setFullYear(currentYear);\n                }\n                \n                targetDate = parsedDate; \n                dateResolved = true;\n            }\n        } catch (e) {\n        }\n    }\n\n    // 1. Gün Tespiti (SADECE Mutlak Tarih Bulunamazsa Çalışır)\n    if (!dateResolved) {\n        if (lowerDate.includes(\"yarın\") || lowerDate.includes(\"yarin\")) {\n            targetDate.setDate(targetDate.getDate() + 1);\n        } else {\n            const dayNames = { \"pazartesi\": 1, \"salı\": 2, \"çarşamba\": 3, \"perşembe\": 4, \"cuma\": 5, \"cumartesi\": 6, \"pazar\": 0 };\n            const todayDay = targetDate.getDay();\n            \n            for (const name in dayNames) {\n                if (lowerDate.includes(name)) {\n                    let targetDay = dayNames[name];\n                    let diff = targetDay - todayDay;\n                    \n                    if (diff <= 0) diff += 7; \n                    \n                    targetDate.setDate(targetDate.getDate() + diff);\n                    break;\n                }\n            }\n        }\n    }\n\n    // 2. Saat Tespiti\n    let hour = 10; \n    let minute = 0;\n    \n    const numericTimeRegex = /(\\d{1,2})(?::(\\d{2}))?/;\n    let timeMatch = lowerTime.match(numericTimeRegex);\n\n    if (timeMatch) {\n        hour = parseInt(timeMatch[1]);\n        minute = parseInt(timeMatch[2] || 0);\n    }\n\n    if (lowerTime.includes(\"öğleden sonra\") || lowerTime.includes(\"öğle\") || lowerTime.includes(\"akşam\")) {\n        if (hour < 12) hour += 12;\n    }\n\n    targetDate.setHours(hour);\n    targetDate.setMinutes(minute);\n\n    return targetDate; \n}\n\n// YARDIMCI FONKSİYON 2: Bitiş Zamanını Hesaplar\nfunction calculateEndTimes(startDateObj, serviceType) {\n    if (!startDateObj) return { start_iso: 'null', end_iso: 'null', startDateObj: null };\n    \n    const durationMinutes = SERVICE_DURATIONS[serviceType] || SERVICE_DURATIONS[\"Belirtilmedi / Diğer\"];\n    \n    if (!isNaN(startDateObj.getTime())) {\n        let endDateObj = new Date(startDateObj.getTime() + durationMinutes * 60000); \n        return {\n            start_iso: startDateObj.toISOString(),\n            end_iso: endDateObj.toISOString(),\n            startDateObj: startDateObj \n        };\n    }\n    return { start_iso: 'null', end_iso: 'null', startDateObj: null };\n}\n\n// YARDIMCI FONKSİYON 3: Regex ile Satır Bazında Değer Çeker\nconst KEY_MAP = {\n    \"İsim\": \"full_name\", \"isim\": \"full_name\", \"Randevu servis tipi\": \"service_type\", \n    \"randevu servis tipi\": \"service_type\", \"Randevu tarihi\": \"appointment_date\", \"randevu tarihi\": \"appointment_date\",\n    \"Randevu saati\": \"appointment_time\", \"randevu saati\": \"appointment_time\", \"Telefon numarası\": \"user_id\", \n    \"telefon numarası\": \"user_id\", \"randevuDuzenleme\": \"is_reschedule_intent\", \"yeniRandevuTarihi\": \"new_appointment_date_raw\", \n    \"yeniRandevuSaati\": \"new_appointment_time_raw\", \"yeniRandevuServisTalebi\": \"new_service_type\", \"operation_type\": \"operation_type\"\n};\nconst regex = /\"\\s*([^\"]+)\\s*\"\\s*:\\s*[\"']?([^\"']+)[\"']?/i; \n\nfor (const item of items) {\n    let finalData = {};\n    let errorDetected = false;\n\n    try {\n        let llmOutputString = item.json.message?.content || item.json.content;\n        if (!llmOutputString) throw new Error(\"Çıktı dizesi ('content' alanı) boş.\");\n\n        // --- ADIM 1: ÇOKLU JSON ÇIKTISINDAN VERİLERİ ÇEKME ---\n        const lines = llmOutputString.split('\\n');\n        \n        for (const line of lines) {\n            const trimmedLine = line.trim();\n            if (trimmedLine.includes(':')) {\n                 \n                 const match = trimmedLine.match(regex);\n                 \n                 if (match && match.length >= 3) {\n                    const key = match[1].trim();\n                    const value = match[2].trim();\n                    \n                    const mappedKey = KEY_MAP[key] || key.toLowerCase().replace(/\\s/g, '_');\n                    finalData[mappedKey] = value;\n                 }\n            }\n        }\n        \n        // --- ADIM 2: TARİH/SAAT ÇÖZÜMLEME VE HESAPLAMA ---\n        const appointmentDate = finalData.appointment_date;\n        const appointmentTime = finalData.appointment_time;\n        const serviceType = finalData.service_type;\n\n        const startDateObj = resolveRelativeDate(appointmentDate, appointmentTime);\n        const isoTimes = calculateEndTimes(startDateObj, serviceType);\n\n        const newAppointmentDateRaw = finalData.new_appointment_date_raw;\n        const newAppointmentTimeRaw = finalData.new_appointment_time_raw;\n        const newServiceType = finalData.new_service_type || serviceType;\n\n        const newStartDateObj = resolveRelativeDate(newAppointmentDateRaw, newAppointmentTimeRaw);\n        const newIsoTimes = calculateEndTimes(newStartDateObj, newServiceType);\n        \n        finalData.start_datetime_iso = isoTimes.start_iso;\n        finalData.end_datetime_iso = isoTimes.end_iso;\n        finalData.reschedule_start_iso = newIsoTimes.start_iso;\n        finalData.reschedule_end_iso = newIsoTimes.end_iso;\n        finalData.raw_message = item.json.raw_message || 'null';\n\n        const pad = (num) => String(num).padStart(2, '0');\n\n        if (isoTimes.startDateObj) {\n            const date = isoTimes.startDateObj;\n            finalData.appointment_date_net = `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;\n            finalData.appointment_time_net = `${pad(date.getHours())}:${pad(date.getMinutes())}`;\n        } else {\n            finalData.appointment_date_net = 'null';\n            finalData.appointment_time_net = 'null';\n        }\n\n        if (newIsoTimes.startDateObj) {\n            const date = newIsoTimes.startDateObj;\n            finalData.reschedule_date_net = `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;\n            finalData.reschedule_time_net = `${pad(date.getHours())}:${pad(date.getMinutes())}`;\n        } else {\n            finalData.reschedule_date_net = 'null';\n            finalData.reschedule_time_net = 'null';\n        }\n\n    } catch (error) {\n        errorDetected = true;\n        finalData = { \n            full_name: 'HATA_AKIŞ_KOPUK', \n            operation_type: 'Hata Bildirimi',\n            error_details: error.message \n        };\n        console.error(\"KRİTİK HATA: Hesaplama/Parse Başarısız:\", error.message);\n    }\n    \n    outputItems.push({\n        json: {\n            ...item.json, \n            \n            full_name: finalData.full_name || 'Bilinmiyor',\n            service_type: finalData.service_type || 'Belirtilmedi / Diğer',\n            appointment_date: finalData.appointment_date || 'null',\n            appointment_time: finalData.appointment_time || 'Saat Eksik',\n            start_datetime_iso: finalData.start_datetime_iso || 'null',\n            end_datetime_iso: finalData.end_datetime_iso || 'null',\n            \n            reschedule_start_iso: finalData.reschedule_start_iso || 'null',\n            reschedule_end_iso: finalData.reschedule_end_iso || 'null',\n            new_service_type: finalData.new_service_type || finalData.service_type || 'null',\n            reschedule_date_net: finalData.reschedule_date_net || 'null',\n            reschedule_time_net: finalData.reschedule_time_net || 'null',\n\n            appointment_date_net: finalData.appointment_date_net || 'null',\n            appointment_time_net: finalData.appointment_time_net || 'null',\n            \n            user_id: finalData.user_id || 'null',\n            operation_type: finalData.operation_type || 'Randevu Oluşturma', \n            raw_message: finalData.raw_message,\n\n            parsing_success: !errorDetected\n        }\n    });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        464
+      ],
+      "id": "98ab9b45-262f-4a6e-a454-07c8c16ffaf9",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10933269-7e9e-4933-a68e-58160e7cebfa",
+              "name": "full-name",
+              "value": "={{ $json.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "dd61cf18-ceb5-4b0d-8d7a-0874baf771cd",
+              "name": "service-type",
+              "value": "={{ $json.service_type }}",
+              "type": "string"
+            },
+            {
+              "id": "9b0afa5c-ecd5-4314-9355-ec29ada9ff17",
+              "name": "start-datetime-ISO",
+              "value": "={{ $json.start_datetime_iso }}",
+              "type": "string"
+            },
+            {
+              "id": "394aaa6f-c894-4b02-b34c-0b24a7204166",
+              "name": "end-datetime-ISO",
+              "value": "={{ $json.end_datetime_iso }}",
+              "type": "string"
+            },
+            {
+              "id": "6048e5e4-f05f-4b7f-a192-8d843e717208",
+              "name": "appointment-date",
+              "value": "={{ $json.appointment_date_net }}",
+              "type": "string"
+            },
+            {
+              "id": "4bbc1879-da8e-45aa-8b60-feff4279c18e",
+              "name": "appointment-time",
+              "value": "={{ $json.appointment_time_net }}",
+              "type": "string"
+            },
+            {
+              "id": "84ce30bf-6e4d-41eb-99d8-67e505f62996",
+              "name": "operation-type",
+              "value": "={{ $json.operation_type }}",
+              "type": "string"
+            },
+            {
+              "id": "89f8f95b-54e3-476d-a5c5-fafb336266dc",
+              "name": "Reschdule-iclude",
+              "value": "={{ $('Code in JavaScript1').item.json.is_reschedule_intent }}",
+              "type": "string"
+            },
+            {
+              "id": "a7b5cf8a-acc6-475b-8129-560b3cbc51ec",
+              "name": "contains-timeinfo",
+              "value": "={{ $('Code in JavaScript1').item.json.contains_time_info }}",
+              "type": "string"
+            },
+            {
+              "id": "fb0d670d-2e36-4d7b-9932-f6387ab3807e",
+              "name": "phone_number",
+              "value": "={{ $('Code in JavaScript1').first().json.phone_number }}",
+              "type": "string"
+            },
+            {
+              "id": "2d0730ef-7d09-49a9-847c-7ace1afc4736",
+              "name": "reschudle-start-ISO",
+              "value": "={{ $json.reschedule_start_iso }}",
+              "type": "string"
+            },
+            {
+              "id": "b42eac13-c824-439d-9861-29b801e5d238",
+              "name": "reschudle-end-ISO",
+              "value": "={{ $json.reschedule_end_iso }}",
+              "type": "string"
+            },
+            {
+              "id": "9e556c1b-11ae-460c-a271-ee7cd8b9b90d",
+              "name": "reschudle-service-type",
+              "value": "={{ $json.new_service_type }}",
+              "type": "string"
+            },
+            {
+              "id": "a40e477d-8036-433a-a870-6e3ca38f315a",
+              "name": "reschudle-appointment-date",
+              "value": "={{ $json.reschedule_date_net }}",
+              "type": "string"
+            },
+            {
+              "id": "1829ea1c-771b-41b9-b161-4e1803dd688b",
+              "name": "reschudle-time-net",
+              "value": "={{ $json.reschedule_time_net }}",
+              "type": "string"
+            },
+            {
+              "id": "1c6e7233-47e8-4f7c-935d-90c68a1691ec",
+              "name": "raw_message",
+              "value": "={{ $('Code in JavaScript1').first().json.raw_message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        464
+      ],
+      "id": "4f7926b0-7ce7-47cf-ac70-c77921866df3",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "limit": 5,
+        "timeMin": "={{ $('Edit Fields1').item.json[\"start-datetime-ISO\"] }}",
+        "timeMax": "={{ $('Edit Fields1').item.json[\"end-datetime-ISO\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1888,
+        608
+      ],
+      "id": "b19c2681-d425-4d5a-a818-e07aab982f06",
+      "name": "Get many events in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e7186367-4d2a-43f3-b3e9-7eb3dce0ea59",
+              "leftValue": "={{ $('Edit Fields1').item.json[\"operation-type\"] }}",
+              "rightValue": "=İptal",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4528,
+        -80
+      ],
+      "id": "2a2888ff-a60a-43f8-b6c3-4f32ee5b3ca6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "eventId": "={{ $json.deleted_event_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        4848,
+        -96
+      ],
+      "id": "c18519d3-4d44-48e8-9281-344ada0432e1",
+      "name": "Delete an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d362df0e-4e9f-40e8-a8df-b590fa65b105",
+              "leftValue": "={{ $('Edit Fields1').item.json['operation-type'] }}",
+              "rightValue": "Düzenleme",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4992,
+        112
+      ],
+      "id": "ad87f1a4-b26b-4f3c-8fd9-4c2897d114ae",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "eventId": "={{ $json.deleted_event_id }}",
+        "updateFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        5280,
+        96
+      ],
+      "id": "add4b44f-57de-4724-80a7-97ef9cb0fdc5",
+      "name": "Update an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "start": "={{ $('Edit Fields1').item.json['start-datetime-ISO'] }}",
+        "end": "={{ $('Code in JavaScript3').item.json.end_datetime_iso }}",
+        "useDefaultReminders": false,
+        "additionalFields": {
+          "color": "7",
+          "summary": "={{ $('Edit Fields1').item.json['full-name'] }}-{{ $('Edit Fields1').item.json['service-type'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        4688,
+        480
+      ],
+      "id": "ec239a56-dd81-4e22-a52c-942771b2c0ac",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Sen, yüksek hassasiyetli bir VERİ YAPILANDIRMA VE SINIFLANDIRMA ASİSTANISIN. Senin TEK ve YALNIZCA görevin, kullanıcının ham mesajını analiz etmek ve gerekli TÜM randevu varlıklarını içeren **TEK BİR DÜZ JSON OBJESİ** çıktısı vermektir.\n\nLÜTFEN DİKKAT: Çıktınız, n8n akışının doğru ilerlemesi için aşağıdaki tüm anahtarları içermelidir.\n\nKRİTİK ÇIKTI KURALLARI:\n\n1.  **TEK ÇIKTI FORMATI:** Tüm çıktınız, '{' ile başlayıp '}' ile biten **TEK BİR DÜZ JSON OBJESİ** olmalıdır. Konuşma, yorum veya Tool çağrısı sarıcısı (wrapper) KULLANMAYIN.\n2.  **MANDATORY KEYS (ZORUNLU ANAHTARLAR):** Aşağıdaki tüm anahtarları ÇIKTINIZA DAHİL ETMEK ZORUNDASINIZ.\n3.  **HATA YÖNETİMİ:** Eğer bir alan (isim, tarih gibi) mesajda bulunamazsa, **KESİNLİKLE** o alan için 'null' veya 'Belirtilmedi' gibi bir yer tutucu dizesi döndürün.\n\nZORUNLU ÇIKTI ALANLARI (MANDATORY OUTPUT FIELDS):\n- İsim (full_name)\n- Randevu Servis Tipi (service_type)\n- İşlem Tipi (operation_type) (Örn: Oluşturma, İptal, Düzenleme)\n\n- Randevu Tarihi (appointment_date)\n- Randevu Saati (appointment_time)\n- Randevu Düzenleme Durumu (is_reschedule_intent) (boolean: true/false)\n\n- Yeni Randevu Tarihi (new_appointment_date_raw)\n- Yeni Randevu Saati (new_appointment_time_raw)\n- Yeni Randevu Servis Talebi (new_service_type)\n\n--- KULLANICI MESAJI VE HAM VERİ ---\nRaw Message: {{ $json.raw_message }}\n--------------------------------------"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        880,
+        464
+      ],
+      "id": "90afe866-9a6e-4b1b-ad36-e67c6b0a1608",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "id",
+              "lookupValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        4848,
+        624
+      ],
+      "id": "9ae95d55-3bcc-4133-b4b2-66a0016c328d",
+      "name": "Get row information",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Costumer database"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "conversations"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "eventId": "={{ $('Create an event').item.json.id }}",
+            "costumer_name": "={{ $json.costumer_name }}",
+            "phone_number": "={{ $json.phone_number }}",
+            "appointment_date": "={{ $json.appointment_date }}",
+            "appointment_time": "={{ $json.appointment_time }}",
+            "service": "={{ $json.service }}",
+            "Start-Date-time": "={{ $json['Start-Date-time'] }}",
+            "end-Date-time": "={{ $json['end-Date-time'] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        5072,
+        640
+      ],
+      "id": "c1e44b75-91c7-4881-8002-53c5b60311a8",
+      "name": "Save event ID",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c23451dc-df0f-412b-8bc7-a8e9381bf720",
+              "leftValue": "={{ $('Edit Fields1').item.json['operation-type'] }}",
+              "rightValue": "Bilgi Talebi",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4896,
+        320
+      ],
+      "id": "66ea1732-af46-4614-bb9e-7a02455972c7",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "82dd83df-b846-450a-b720-628ac9ba95d2",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5376,
+        736
+      ],
+      "id": "f4ef5804-9831-40a5-b935-d54f6a1f8da1",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * İPTAL ONAY ÇIKTISI PARSE KODU (NİHAİ VERSİYON)\n * Kod, 'event_id' veya 'eventID' varyasyonlarını yakalar ve mesajı temizler.\n *\n * @returns {array} - Temizlenmiş mesaj ve Event ID içeren çıktı.\n */\n\nconst items = $input.all();\nconst outputItems = [];\n\nfor (const item of items) {\n    // Ham çıktıyı al (örneğin: item.json.output)\n    let rawOutput = item.json.output || item.json.message?.content || String(item.json); \n\n    // Kaçış ve satır sonu karakterlerini temizle: \\n, \\t ve çift kaçış işaretlerini temizler\n    let cleanOutput = rawOutput.replace(/\\\\n/g, ' ').replace(/\\\\\"/g, '\"').replace(/\\\\/g, '').trim();\n    \n    // --- 1. EVENT ID'yi Çekme (KRİTİK DÜZELTME) ---\n    // Regex Açıklaması: \"event\", ardından isteğe bağlı bir alt çizgi (_), ardından \"id\" arar.\n    // 'i' (case-insensitive) bayrağı sayesinde 'eventID' veya 'eventid' gibi varyasyonlar da yakalanır.\n    const eventIdRegex = /\"event[_]?id\"\\s*:\\s*\"([^\"]+)\"/i;\n    const eventIdMatch = cleanOutput.match(eventIdRegex);\n    \n    const eventId = eventIdMatch && eventIdMatch[1] ? eventIdMatch[1].trim() : 'NOT_FOUND';\n    \n    // --- 2. MESAJI ÇEKME ---\n    // \"message\": \"MESAJ METNİ\" yapısını çeker.\n    const messageRegex = /\"message\"\\s*:\\s*\"([^\"]*)\"/; \n    const messageMatch = cleanOutput.match(messageRegex);\n    \n    let confirmationMessage = 'İşlem Başarılı: Mesaj metni çekilemedi.';\n\n    if (messageMatch && messageMatch[1]) {\n        // Tırnaklar arasındaki temiz metni al\n        confirmationMessage = messageMatch[1].trim();\n    } else {\n        // Fallback: Eğer Regex başarısız olursa, ID'den önceki metni mesaj olarak al.\n        const idIndex = cleanOutput.toLowerCase().indexOf('eventid');\n        if (idIndex !== -1) {\n             confirmationMessage = cleanOutput.substring(0, idIndex).replace(/\\{|\\}|\"|message:|/g, '').trim();\n        }\n    }\n    \n    // Final çıktı objesini oluşturma\n    outputItems.push({\n        json: {\n            ...item.json,\n            final_confirmation_message: confirmationMessage,\n            deleted_event_id: eventId,\n            cancellation_success: eventId !== 'NOT_FOUND' \n        }\n    });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2656,
+        480
+      ],
+      "id": "ad40ad05-32b7-4568-910d-5f8ebd1ebcb8",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "eventId": "={{ $json.deleted_event_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        5360,
+        288
+      ],
+      "id": "eda9be75-5cf4-4643-8e4c-e30468daaa3d",
+      "name": "Get an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "appointment-test",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        608,
+        176
+      ],
+      "id": "26f9c6bf-e314-46bf-b874-a2bdd78b8faa",
+      "name": "Webhook",
+      "webhookId": "c89f35a0-0244-491e-8c9e-ff9b8d3efb12"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * AI Agent çıktısını güvenli JSON'a çevirir.\n */\n\nconst outputItems = [];\n\nfor (const item of $input.all()) {\n  const raw =\n    item.json.output ||\n    item.json.text ||\n    item.json.message?.content ||\n    item.json.content ||\n    '';\n\n  let parsed = {};\n\n  try {\n    let clean = String(raw).trim();\n\n    // Markdown code block geldiyse temizle\n    clean = clean\n      .replace(/^```json/i, '')\n      .replace(/^```/i, '')\n      .replace(/```$/i, '')\n      .trim();\n\n    const firstBrace = clean.indexOf('{');\n    const lastBrace = clean.lastIndexOf('}');\n\n    if (firstBrace !== -1 && lastBrace !== -1) {\n      clean = clean.slice(firstBrace, lastBrace + 1);\n    }\n\n    parsed = JSON.parse(clean);\n  } catch (error) {\n    parsed = {\n      operation_type: 'missing_info',\n      full_name: null,\n      phone_number: item.json.phone_number || null,\n      service_type: 'Belirtilmedi / Diğer',\n      appointment_date: null,\n      appointment_time: null,\n      new_appointment_date: null,\n      new_appointment_time: null,\n      new_service_type: null,\n      customer_message: 'Mesajınızı tam anlayamadım. Randevu almak istediğiniz gün ve saati yazar mısınız?',\n      parse_error: error.message,\n      raw_ai_output: raw\n    };\n  }\n\n  outputItems.push({\n    json: {\n      ...item.json,\n      ...parsed,\n      phone_number: parsed.phone_number || item.json.phone_number || item.json.phone || $('Code in JavaScript1').first().json.phone_number || null,\nfull_name: parsed.full_name || item.json.full_name || item.json.user_name || $('Code in JavaScript1').first().json.user_name || null,\n      raw_ai_output: raw,\n      ai_parse_success: !parsed.parse_error\n    }\n  });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        64
+      ],
+      "id": "867881ec-87aa-4a2f-baa6-8b5647b7288c",
+      "name": "Parse AI JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Türkçe tarih/saat ifadelerini ISO formatına çevirir.\n * Ayrıca Google Calendar sorgusu için gün başlangıç/bitiş aralığı üretir.\n */\n\nconst outputItems = [];\n\nconst SERVICE_DURATIONS = {\n  'Saç Kesimi': 60,\n  'Boya/Röfle': 150,\n  'Manikür/Pedikür': 90,\n  'Fön/Şekillendirme': 30,\n  'Belirtilmedi / Diğer': 60\n};\n\nfunction pad(n) {\n  return String(n).padStart(2, '0');\n}\n\nfunction normalizeTurkish(str) {\n  return String(str || '')\n    .toLowerCase()\n    .replace(/ı/g, 'i')\n    .replace(/ğ/g, 'g')\n    .replace(/ü/g, 'u')\n    .replace(/ş/g, 's')\n    .replace(/ö/g, 'o')\n    .replace(/ç/g, 'c')\n    .trim();\n}\n\nfunction resolveDate(dateText) {\n  const now = new Date();\n  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());\n  const text = normalizeTurkish(dateText);\n\n  let target = new Date(today);\n\n  if (!text || text === 'null') {\n    return target;\n  }\n\n  if (text.includes('bugun')) {\n    return target;\n  }\n\n  if (text.includes('yarin')) {\n    target.setDate(target.getDate() + 1);\n    return target;\n  }\n\n  const afterDaysMatch = text.match(/(\\d+)\\s*gun\\s*sonra/);\n  if (afterDaysMatch) {\n    target.setDate(target.getDate() + Number(afterDaysMatch[1]));\n    return target;\n  }\n\n  const dayMap = {\n    'pazar': 0,\n    'pazartesi': 1,\n    'sali': 2,\n    'carsamba': 3,\n    'persembe': 4,\n    'cuma': 5,\n    'cumartesi': 6\n  };\n\n  for (const [name, dayNumber] of Object.entries(dayMap)) {\n    if (text.includes(name)) {\n      const currentDay = today.getDay();\n      let diff = dayNumber - currentDay;\n      if (diff <= 0) diff += 7;\n      target.setDate(target.getDate() + diff);\n      return target;\n    }\n  }\n\n  // dd-mm-yyyy veya dd/mm/yyyy\n  const dmy = text.match(/(\\d{1,2})[-/.](\\d{1,2})(?:[-/.](\\d{4}))?/);\n  if (dmy) {\n    const day = Number(dmy[1]);\n    const month = Number(dmy[2]) - 1;\n    const year = dmy[3] ? Number(dmy[3]) : now.getFullYear();\n    return new Date(year, month, day);\n  }\n\n  return target;\n}\n\nfunction resolveTime(timeText) {\n  const text = normalizeTurkish(timeText);\n\n  if (!text || text === 'null') {\n    return null;\n  }\n\n  const match = text.match(/(\\d{1,2})(?::|\\.|\\s)?(\\d{2})?/);\n  if (!match) return null;\n\n  let hour = Number(match[1]);\n  let minute = match[2] ? Number(match[2]) : 0;\n\n  if (\n    (text.includes('aksam') || text.includes('ogleden sonra') || text.includes('ogle')) &&\n    hour < 12\n  ) {\n    hour += 12;\n  }\n\n  return { hour, minute };\n}\n\nfor (const item of $input.all()) {\n  const j = item.json;\n\n  const operationType = j.operation_type || 'availability_query';\n  const serviceType = j.service_type || 'Belirtilmedi / Diğer';\n  const duration = SERVICE_DURATIONS[serviceType] || 60;\n\n  const baseDate = resolveDate(j.appointment_date || 'bugün');\n  const time = resolveTime(j.appointment_time);\n\n  const dayStart = new Date(baseDate);\n  dayStart.setHours(0, 0, 0, 0);\n\n  const dayEnd = new Date(baseDate);\n  dayEnd.setHours(23, 59, 59, 999);\n\n  let startDateTime = null;\n  let endDateTime = null;\n\n  if (time) {\n    startDateTime = new Date(baseDate);\n    startDateTime.setHours(time.hour, time.minute, 0, 0);\n\n    endDateTime = new Date(startDateTime.getTime() + duration * 60000);\n  }\n\n  outputItems.push({\n    json: {\n      ...j,\n\n      service_duration_minutes: duration,\n\n      query_date_net: `${pad(baseDate.getDate())}-${pad(baseDate.getMonth() + 1)}-${baseDate.getFullYear()}`,\n      query_day_start_iso: dayStart.toISOString(),\n      query_day_end_iso: dayEnd.toISOString(),\n\n      appointment_date_net: `${pad(baseDate.getDate())}-${pad(baseDate.getMonth() + 1)}-${baseDate.getFullYear()}`,\n      appointment_time_net: time ? `${pad(time.hour)}:${pad(time.minute)}` : null,\n\n      start_datetime_iso: startDateTime ? startDateTime.toISOString() : null,\n      end_datetime_iso: endDateTime ? endDateTime.toISOString() : null\n    }\n  });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        64
+      ],
+      "id": "0bb62bd0-993f-488e-ac56-a4338a88e855",
+      "name": "Resolve Date and Time"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d892f9fe-6461-4096-8309-1dac2ce87cd1",
+              "leftValue": "={{ $json.operation_type }}",
+              "rightValue": "availability_query",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2208,
+        64
+      ],
+      "id": "e33f0dda-df64-45d6-bfaa-170c9d18e924",
+      "name": "Availability Query"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.query_day_start_iso }}",
+        "timeMax": "={{ $json.query_day_end_iso }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2416,
+        -32
+      ],
+      "id": "2e4aa51b-86c0-4543-b2f8-e005fe4d3d39",
+      "name": "Get Events For Selected Day",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Google Calendar eventlerini alır, çalışma saatlerinden doluları çıkarır.\n * Boş slotları üretir.\n */\n\nconst ctx = $('Resolve Date and Time').first().json;\n\nconst WORK_START = '09:00';\nconst WORK_END = '18:00';\nconst SLOT_MINUTES = Number(ctx.service_duration_minutes || 60);\n\n// Mola varsa burayı sonra açarız\nconst LUNCH_START = null; // örnek: '13:00'\nconst LUNCH_END = null;   // örnek: '14:00'\n\nfunction pad(n) {\n  return String(n).padStart(2, '0');\n}\n\nfunction setTime(baseDate, hhmm) {\n  const [h, m] = hhmm.split(':').map(Number);\n  const d = new Date(baseDate);\n  d.setHours(h, m, 0, 0);\n  return d;\n}\n\nfunction overlaps(aStart, aEnd, bStart, bEnd) {\n  return aStart < bEnd && aEnd > bStart;\n}\n\nconst baseDate = new Date(ctx.query_day_start_iso);\nconst workStart = setTime(baseDate, WORK_START);\nconst workEnd = setTime(baseDate, WORK_END);\n\nconst now = new Date();\n\nlet effectiveStart = new Date(workStart);\n\n// Bugünse geçmiş saatleri gösterme\nif (\n  now.getFullYear() === baseDate.getFullYear() &&\n  now.getMonth() === baseDate.getMonth() &&\n  now.getDate() === baseDate.getDate()\n) {\n  effectiveStart = new Date(Math.max(workStart.getTime(), now.getTime() + 30 * 60000));\n\n  const minutes = effectiveStart.getMinutes();\n\n  if (minutes > 0 && minutes <= 30) {\n    effectiveStart.setMinutes(30, 0, 0);\n  } else if (minutes > 30) {\n    effectiveStart.setHours(effectiveStart.getHours() + 1, 0, 0, 0);\n  }\n}\n\nconst calendarItems = $input.all().map(i => i.json);\n\nconst busy = calendarItems.map(e => {\n  const startRaw =\n    e.start?.dateTime ||\n    e.start?.date ||\n    e.startDateTime ||\n    e.start_date ||\n    e.start_time;\n\n  const endRaw =\n    e.end?.dateTime ||\n    e.end?.date ||\n    e.endDateTime ||\n    e.end_date ||\n    e.end_time;\n\n  return {\n    start: new Date(startRaw),\n    end: new Date(endRaw)\n  };\n}).filter(e => !isNaN(e.start.getTime()) && !isNaN(e.end.getTime()));\n\nif (LUNCH_START && LUNCH_END) {\n  busy.push({\n    start: setTime(baseDate, LUNCH_START),\n    end: setTime(baseDate, LUNCH_END)\n  });\n}\n\nconst slots = [];\nlet cursor = new Date(effectiveStart);\n\nwhile (cursor < workEnd) {\n  const slotStart = new Date(cursor);\n  const slotEnd = new Date(slotStart.getTime() + SLOT_MINUTES * 60000);\n\n  if (slotEnd <= workEnd) {\n    const isBusy = busy.some(b => overlaps(slotStart, slotEnd, b.start, b.end));\n\n    if (!isBusy) {\n      slots.push({\n        time: `${pad(slotStart.getHours())}:${pad(slotStart.getMinutes())}`,\n        start_iso: slotStart.toISOString(),\n        end_iso: slotEnd.toISOString()\n      });\n    }\n  }\n\n  cursor = new Date(cursor.getTime() + 30 * 60000);\n}\n\nlet message = '';\n\nif (slots.length > 0) {\n  const slotText = slots.slice(0, 8).map(s => `• ${s.time}`).join('\\n');\n\n  message =\n`${ctx.query_date_net} tarihi için uygun saatler:\n\n${slotText}\n\nRandevu almak istediğiniz saati yazabilirsiniz.`;\n} else {\n  message =\n`${ctx.query_date_net} tarihinde uygun saat görünmüyor. İsterseniz yarın veya başka bir gün için boş saatleri kontrol edebilirim.`;\n}\n\nreturn [\n  {\n    json: {\n      ...ctx,\n      available_slots: slots,\n      available_slots_text: slots.map(s => s.time).join(', '),\n      final_message: message\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        -32
+      ],
+      "id": "b00e9932-f904-48a8-92ff-d5cc05e3de45",
+      "name": "Calculate Available Slots"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.final_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2896,
+        -32
+      ],
+      "id": "2a34d669-6add-4ee0-917d-abf2423be2f7",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bed229cd-26cc-48b0-b9eb-64b612e09a82",
+              "leftValue": "={{ $json.operation_type }}",
+              "rightValue": "create_appointment",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2416,
+        160
+      ],
+      "id": "2ea05a13-0ea4-40cc-b372-38e54d78e213",
+      "name": "IF - Create Appointment"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.query_day_start_iso }}",
+        "timeMax": "={{ $json.query_day_end_iso }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2672,
+        144
+      ],
+      "id": "e790dc19-909d-4861-af09-e77e94ea9107",
+      "name": "Get Events For Create",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Resolve Date and Time').first().json;\n\nfunction getEventStart(e) {\n  return e.start?.dateTime || e.start?.date || e.startDateTime || e.start_date || e.start_time;\n}\n\nfunction getEventEnd(e) {\n  return e.end?.dateTime || e.end?.date || e.endDateTime || e.end_date || e.end_time;\n}\n\nfunction overlaps(aStart, aEnd, bStart, bEnd) {\n  return aStart < bEnd && aEnd > bStart;\n}\n\nconst start = new Date(ctx.start_datetime_iso);\nconst end = new Date(ctx.end_datetime_iso);\n\nlet hasConflict = false;\nlet conflictEvent = null;\n\nconst events = $input.all().map(i => i.json);\n\nif (!ctx.start_datetime_iso || !ctx.end_datetime_iso || isNaN(start.getTime()) || isNaN(end.getTime())) {\n  return [\n    {\n      json: {\n        ...ctx,\n        can_create: false,\n        has_conflict: false,\n        final_message: 'Randevu oluşturmak için gün ve saat bilgisini net yazmanız gerekiyor. Örneğin: yarın 14:00 saç kesimi.'\n      }\n    }\n  ];\n}\n\nfor (const event of events) {\n  const eventStartRaw = getEventStart(event);\n  const eventEndRaw = getEventEnd(event);\n\n  if (!eventStartRaw || !eventEndRaw) continue;\n\n  const eventStart = new Date(eventStartRaw);\n  const eventEnd = new Date(eventEndRaw);\n\n  if (isNaN(eventStart.getTime()) || isNaN(eventEnd.getTime())) continue;\n\n  if (overlaps(start, end, eventStart, eventEnd)) {\n    hasConflict = true;\n    conflictEvent = {\n      id: event.id || null,\n      summary: event.summary || null,\n      start: eventStartRaw,\n      end: eventEndRaw\n    };\n    break;\n  }\n}\n\nlet finalMessage = '';\n\nif (hasConflict) {\n  finalMessage = `${ctx.appointment_date_net} ${ctx.appointment_time_net} için başka bir randevu görünüyor. Lütfen farklı bir saat seçin.`;\n} else {\n  finalMessage = `${ctx.appointment_date_net} ${ctx.appointment_time_net} için randevu oluşturulabilir.`;\n}\n\nreturn [\n  {\n    json: {\n      ...ctx,\n      can_create: !hasConflict,\n      has_conflict: hasConflict,\n      conflict_event: conflictEvent,\n      final_message: finalMessage\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        144
+      ],
+      "id": "fe93ed62-711a-444c-96f1-d473bab5ed03",
+      "name": "Check Appointment Conflict"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0302f34d-547f-424d-b705-572cbc3e7a51",
+              "leftValue": "={{ $json.can_create }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3088,
+        144
+      ],
+      "id": "d5d1d651-6e75-49a7-9b7d-1efcbe72d916",
+      "name": "IF - Can Create"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.final_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3296,
+        240
+      ],
+      "id": "dac6489e-432c-4fa8-8865-9536d2fd7c05",
+      "name": "Respond Conflict"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_EMAIL",
+          "mode": "list",
+          "cachedResultName": "YOUR_CALENDAR_NAME"
+        },
+        "start": "={{ $json.start_datetime_iso }}",
+        "end": "={{ $json.end_datetime_iso }}",
+        "useDefaultReminders": false,
+        "additionalFields": {
+          "description": "={{ \n'Telefon: ' + ($json.phone_number || '-') + \n'\\nHizmet: ' + ($json.service_type || '-') +\n'\\nTarih: ' + ($json.appointment_date_net || '-') +\n'\\nSaat: ' + ($json.appointment_time_net || '-') +\n'\\nKaynak: n8n Webhook Test'\n}}",
+          "summary": "={{ ($json.full_name || 'Müşteri') + ' - ' + ($json.service_type || 'Randevu') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3296,
+        96
+      ],
+      "id": "eea25933-431b-4e6e-a68b-33952b9dcdb2",
+      "name": "Create an event1",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_GOOGLE_CALENDAR_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_CALENDAR_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_APPOINTMENTS_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Berber Randevu Sistemi"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "appointment_id": "={{ 'apt_' + Date.now() }}",
+            "phone_number": "={{ $('Check Appointment Conflict').first().json.phone_number || $('Code in JavaScript1').first().json.phone_number }}",
+            "full_name": "={{ $('Check Appointment Conflict').first().json.full_name || $('Code in JavaScript1').first().json.user_name || 'Müşteri' }}",
+            "service_type": "={{ $('Check Appointment Conflict').first().json.service_type || 'Belirtilmedi / Diğer' }}",
+            "appointment_date": "={{ $('Check Appointment Conflict').first().json.appointment_date_net }}",
+            "appointment_time": "={{ $('Check Appointment Conflict').first().json.appointment_time_net }}",
+            "start_datetime_iso": "={{ $('Check Appointment Conflict').first().json.start_datetime_iso }}",
+            "end_datetime_iso": "={{ $('Check Appointment Conflict').first().json.end_datetime_iso }}",
+            "calendar_event_id": "={{ $json.id }}",
+            "status": "booked",
+            "reminder_sent": "no",
+            "confirmation_status": "pending",
+            "created_at": "={{ new Date().toISOString() }}",
+            "updated_at": "={{ new Date().toISOString() }}",
+            "notes": "={{ 'Webhook test üzerinden oluşturuldu' }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3504,
+        96
+      ],
+      "id": "f0a432e4-2203-4a93-a852-41a966a0d4c4",
+      "name": "Append Appointment Row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "YOUR_GOOGLE_SHEETS_ACCOUNT_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ \n'Randevunuz oluşturuldu ✅\\n\\n' +\n'Tarih: ' + $('Check Appointment Conflict').first().json.appointment_date_net + '\\n' +\n'Saat: ' + $('Check Appointment Conflict').first().json.appointment_time_net + '\\n' +\n'Hizmet: ' + $('Check Appointment Conflict').first().json.service_type\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3712,
+        96
+      ],
+      "id": "2e52e66d-9f48-475b-8edd-fb736a386a9b",
+      "name": "Respond Created"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Config": {
+      "ai_tool": []
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse AI JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "ai_tool": []
+    },
+    "Simple Memory": {
+      "ai_memory": []
+    },
+    "Add Appointment": {
+      "ai_tool": []
+    },
+    "WhatsApp Trigger": {
+      "main": []
+    },
+    "Get All Appointments": {
+      "ai_tool": []
+    },
+    "Get User Appointments": {
+      "ai_tool": []
+    },
+    "Reschedule Appointment": {
+      "ai_tool": []
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel Appointment": {
+      "ai_tool": []
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events in Google Calendar": {
+      "ai_tool": []
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Delete an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Get row information",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row information": {
+      "main": [
+        [
+          {
+            "node": "Save event ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Get an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": []
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI JSON": {
+      "main": [
+        [
+          {
+            "node": "Resolve Date and Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolve Date and Time": {
+      "main": [
+        [
+          {
+            "node": "Availability Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Availability Query": {
+      "main": [
+        [
+          {
+            "node": "Get Events For Selected Day",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF - Create Appointment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Events For Selected Day": {
+      "main": [
+        [
+          {
+            "node": "Calculate Available Slots",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Available Slots": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Create Appointment": {
+      "main": [
+        [
+          {
+            "node": "Get Events For Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Events For Create": {
+      "main": [
+        [
+          {
+            "node": "Check Appointment Conflict",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Appointment Conflict": {
+      "main": [
+        [
+          {
+            "node": "IF - Can Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Can Create": {
+      "main": [
+        [
+          {
+            "node": "Create an event1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Conflict",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event1": {
+      "main": [
+        [
+          {
+            "node": "Append Appointment Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Appointment Row": {
+      "main": [
+        [
+          {
+            "node": "Respond Created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e96617c2-e7bd-44d6-9a7b-39319877ccec",
+  "meta": {
+    "instanceId": "53d36c255101696cb40e9f98ea1fc6e16b8b7e6b09f110c13cb5b4ed7a7ea048"
+  },
+  "id": "tTqoqzhF13JFU2IE",
+  "tags": []
+}
